@@ -1,0 +1,396 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COA Labs Copy-Paste Portal</title>
+    <style>
+        body {
+            font-family: monospace;
+            background-color: #f5f5f5;
+            padding: 20px;
+            color: #333;
+            margin: 0;
+        }
+        #searchBar {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .code-block {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .code-block:hover {
+            background-color: #e0f7fa;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-x: auto;
+            margin: 0;
+        }
+        h2 {
+            font-size: 1em;
+            margin-bottom: 8px;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>COA Labs Copy-Paste Utility</h1>
+    <input type="text" id="searchBar" onkeyup="filterBlocks()" placeholder="Search by filename or keywords... (e.g., addition, 8bit)">
+
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>2's complement of 8bit number.txt</h2>
+        <pre>mov al, [4000h]
+not al
+add al, 01h
+mov [4004h],al</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Add,sub,mul & div of 2 16 bit nums(immediate addressing mode).txt</h2>
+        <pre>; addition
+mov ax, 5225h
+mov bx,ax
+add ax, 4324h
+MOU [2000H], ax
+
+; subtraction
+mov ax, bx
+sub ax, 4324h
+mov [2002h],ax
+
+;multiplication
+mov ax, bx
+mov cx, 4324h
+mul cx
+mov [2004h], ax
+mov [2006h], dx
+mov dx, 0000h
+
+;division
+mov ax, bx
+div cx
+mov [2008h], ax
+mov [200Ahl, dx</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Arrange the elements of array, ascending order.txt</h2>
+        <pre>.DATA
+count db 06
+value db 09H, OFH, 14H, 45H, 24H,
+.CODE
+MAIN PROC
+MOV AX, DATA
+MOV DS, AX
+LEA DI, count
+MOV CH, [DI]
+DEC CH
+UP2: MOV CL, CH
+LEA SI, value
+UP1: MOV AL, [SI]
+CMP AL, [Si+1]
+JC DOWN
+MOV DL, [SI+1]
+XCHG [SI], DL
+MOV [SI+1], DL
+
+DOWN: INC SI
+DEC CL
+JNZ UP1
+DEC CH
+JNZ UP2
+END MAIN</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Arrange the elements of array, descending order.txt</h2>
+        <pre>.DATA
+count db 06
+value db 09H, OFH, 14H, 45H, 24H, 3FH
+.CODE
+MAIN PROC
+MOV AX, DATA
+MOV DS, AX
+LEA DI, count
+MOV CH, [DI]
+DEC CH
+UP2: MOV CL, CH
+LEA SI, value
+UP1: MOV AL, [SI]
+CMP AL, [Si+1]
+JNC DOWN
+MOV DL, [SI+1]
+XCHG [SI], DL
+MOV [SI+1], DL
+DOWN: INC SI
+DEC CL
+JNZ UP1
+DEC CH
+JNZ UP2
+END MAIN</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Count no. of 0's in a 8bit number.txt</h2>
+        <pre>MOV BX, 4000H
+MOV AL, [BX]
+MOV CL, 08H
+MOV CH, 00H
+L2: SHR AL, 01H
+JC L1
+INC CH
+L1: DEC CL
+JNZ L2
+INC BX
+MOV [BX], CH
+HLT</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Cpulator; Perform addition & subtraction of 2, 32bit numbers using data processing addressing mode (with 8-bit immediate data).txt</h2>
+        <pre>.global_start
+_start:
+
+mov r0, #0x40
+mov r1, #0x50
+adds r2,r0, #0x50
+subs r3,r0, #0x50
+mul r4,ro,r1
+my_exit: b my_exit</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Cpulator; Perform addition, subtraction & multiplication of 2, 32- bit numbers using load,store addressing mode.txt</h2>
+        <pre>.global_start
+_start:
+LDR RO,=0X100000
+LDR R1, [R0],#4
+LDR R2, [R0],#4
+ADDS R3,R1, R2
+STR R3, [R0],#4
+SUBS R4, R1, R2
+STR R4, [R0],#4
+MUL R5, R1, R2
+STR R5, [R0]
+my_exit: b my_exit</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Cpulator; Perform logical operation (and,or,xor & not) on 2, 32-bit numbers using load,store addressing mode.txt</h2>
+        <pre>.global_start
+_start:
+LDR R0,=0X10100000
+LDR R1, [R0],#4
+LDR R2, [R0],#4
+ANDS R3,R2, R1
+STR R3, [R0],#4
+ORR R4, R2, R1
+STR R4, [R0],#4
+EOR R5, R2, R1
+STR R5, [R0],#4
+MVN R6, R1
+STR R6, [R0]
+my_exit: b my_exit</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Find grey code of an 8bit binary number.txt</h2>
+        <pre>mov al, [4000h]
+mov bl,al
+shr al, 01h
+xor al,bl
+mov [4002h],al</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Find the largest number in a given array of size N.txt</h2>
+        <pre>.data
+count db 04h
+value db 09h, 10h, 05h, 03h
+res db ?
+.code
+MAIN PROC
+mov ax, data
+mov ds, ax
+mov cl, count
+dec cl
+LEA SI, value
+mov al, [si]
+up: inc si
+cmp al, [si]
+jnc nxt
+mov al, [si]
+nxt: dec cl
+jnz up
+LEA di, res
+mov [di], al
+end main
+</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Find the smallest number in a given array of size N.txt</h2>
+        <pre>.DATA
+COUNT DB 04H
+VALUE DB 09H, 10H, 05H, 03H
+RES DB ?
+
+.CODE
+MAIN PROC
+MOV AX, DATA
+MOV DS, AX
+MOV CL, COUNT
+DEC CL
+LEA SI, VALUE
+MOV AL, [SI]
+
+UP: INC SI
+CMP AL, [SI]
+JC NXT
+MOV AL, [SI]
+
+NXT: DEC CL
+JNZ UP
+LEA DI, RES
+MOV [DI], AL
+HLT
+END MAIN</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Find the sum & average of N 16 bit numbers.txt</h2>
+        <pre>MOV SI, 2000H
+MOV CL, [SI]
+MOV CH,00H
+MOV BX, CX
+MOV AX, 0000H
+L2: INC SI
+INC SI
+ADD AX, [SI]
+JNC L1
+INC CH
+L1: DEC CL
+JNZ L2
+INC SI
+INC SI
+MOV [SI], AX
+INC SI
+INC SI
+MOV [SI], CH
+MOV DL, CH
+DIV BX
+INC SI
+INC SI
+MOV [SI], AX
+INC SI
+INC SI
+MOV [SI], DX
+HLT</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Move a block of 16bit data from one location to another.txt</h2>
+        <pre>MOV AX, 4000H
+MOV DS, AX
+MOV SI, 5000H
+MOV DI, 6000H
+MOV CL, 05H
+L1: MOV BX, [SI]
+MOV [DI], BX
+INC SI
+INC SI
+INC DI
+INC DI
+DEC CL
+JNZ L1
+HLT</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Multiplication of 2, 16bit nums without using MUL ins in direct addressing mode.txt</h2>
+        <pre>MOV BX, [5000H]
+MOV CX [5002H]
+MOV DX, 0000H
+MOV AX, 0000H
+
+L2: ADD AX, BX
+JNC L1 
+INC DX 
+
+L1: DEC CX
+JNZ L2 
+
+MOV [5004H], AX
+MOV [5006H], DX
+HLT
+</pre>
+    </div>
+    
+    <div class="code-block" onclick="copyContent(this)">
+        <h2>Using 2, 8bit data in a memory and store in another memory (indirect addressing mode).txt</h2>
+        <pre>; swapping of nibbles
+mov si, 1000h
+mov al, [si]
+mov cl, al
+inc si
+mov bl, [si]
+mov dl,al
+shr al,04
+shl dl,04
+or al,dl
+inc si
+mov [si],al
+
+; computation of y
+mov al,cl
+and al,bl
+mov dl,al
+xor cl,bl
+or al,cl
+inc si
+mov [si],al</pre>
+    </div>
+    
+<script>
+function filterBlocks() {
+    const query = document.getElementById("searchBar").value.toLowerCase();
+    const blocks = document.getElementsByClassName("code-block");
+    for (let block of blocks) {
+        const text = block.innerText.toLowerCase();
+        block.style.display = text.includes(query) ? "block" : "none";
+    }
+}
+
+function copyContent(block) {
+    const pre = block.querySelector("pre");
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+        block.style.backgroundColor = "#dcedc8";
+        setTimeout(() => {
+            block.style.backgroundColor = "#fff";
+        }, 800);
+    });
+}
+</script>
+</body>
+</html>
