@@ -55,11 +55,11 @@
     </style>
 </head>
 <body>
-    <h1>COA Labs Copy-Paste Utility</h1>
+    <h1>COA Lab (1,2,3,4)</h1>
     <input type="text" id="searchBar" onkeyup="filterBlocks()" placeholder="Search by filename or keywords... (e.g., addition, 8bit)">
 
     <div class="code-block" onclick="copyContent(this)">
-        <h2>2's complement of 8bit number.txt</h2>
+        <h2>2s complement of 8bit number.txt</h2>
         <pre>mov al, [4000h]
 not al
 add al, 01h
@@ -95,7 +95,7 @@ mov [200Ahl, dx</pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
-        <h2>Arrange the elements of array, ascending order.txt</h2>
+        <h2>Arrange the elements of array, ascending order</h2>
         <pre>.DATA
 count db 06
 value db 09H, OFH, 14H, 45H, 24H,
@@ -124,7 +124,7 @@ END MAIN</pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
-        <h2>Arrange the elements of array, descending order.txt</h2>
+        <h2>Arrange the elements of array, descending order</h2>
         <pre>.DATA
 count db 06
 value db 09H, OFH, 14H, 45H, 24H, 3FH
@@ -152,7 +152,7 @@ END MAIN</pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
-        <h2>Count no. of 0's in a 8bit number.txt</h2>
+        <h2>Count no. of 0's in a 8bit number</h2>
         <pre>MOV BX, 4000H
 MOV AL, [BX]
 MOV CL, 08H
@@ -168,7 +168,7 @@ HLT</pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
-        <h2>Cpulator; Perform addition & subtraction of 2, 32bit numbers using data processing addressing mode (with 8-bit immediate data).txt</h2>
+        <h2>Cpulator; Perform addition & subtraction of 2, 32bit numbers using data processing addressing mode (with 8-bit immediate data)</h2>
         <pre>.global_start
 _start:
 
@@ -181,7 +181,7 @@ my_exit: b my_exit</pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
-        <h2>Cpulator; Perform addition, subtraction & multiplication of 2, 32- bit numbers using load,store addressing mode.txt</h2>
+        <h2>Cpulator; Perform addition, subtraction & multiplication of 2, 32- bit numbers using load,store addressing mode</h2>
         <pre>.global_start
 _start:
 LDR RO,=0X100000
@@ -197,7 +197,7 @@ my_exit: b my_exit</pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
-        <h2>Cpulator; Perform logical operation (and,or,xor & not) on 2, 32-bit numbers using load,store addressing mode.txt</h2>
+        <h2>Cpulator; Perform logical operation (and,or,xor & not) on 2, 32-bit numbers using load,store addressing mode</h2>
         <pre>.global_start
 _start:
 LDR R0,=0X10100000
@@ -215,7 +215,7 @@ my_exit: b my_exit</pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
-        <h2>Find grey code of an 8bit binary number.txt</h2>
+        <h2>Find grey code of an 8bit binary number</h2>
         <pre>mov al, [4000h]
 mov bl,al
 shr al, 01h
@@ -224,7 +224,7 @@ mov [4002h],al</pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
-        <h2>Find the largest number in a given array of size N.txt</h2>
+        <h2>Find the largest number in a given array of size N</h2>
         <pre>.data
 count db 04h
 value db 09h, 10h, 05h, 03h
@@ -250,7 +250,7 @@ end main
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
-        <h2>Find the smallest number in a given array of size N.txt</h2>
+        <h2>Find the smallest number in a given array of size N</h2>
         <pre>.DATA
 COUNT DB 04H
 VALUE DB 09H, 10H, 05H, 03H
@@ -279,7 +279,7 @@ END MAIN</pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
-        <h2>Find the sum & average of N 16 bit numbers.txt</h2>
+        <h2>Find the sum & average of N 16 bit numbers</h2>
         <pre>MOV SI, 2000H
 MOV CL, [SI]
 MOV CH,00H
@@ -310,7 +310,7 @@ HLT</pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
-        <h2>Move a block of 16bit data from one location to another.txt</h2>
+        <h2>Move a block of 16bit data from one location to another</h2>
         <pre>MOV AX, 4000H
 MOV DS, AX
 MOV SI, 5000H
@@ -328,7 +328,7 @@ HLT</pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
-        <h2>Multiplication of 2, 16bit nums without using MUL ins in direct addressing mode.txt</h2>
+        <h2>Multiplication of 2, 16bit nums without using MUL ins in direct addressing mode</h2>
         <pre>MOV BX, [5000H]
 MOV CX [5002H]
 MOV DX, 0000H
@@ -348,7 +348,7 @@ HLT
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
-        <h2>Using 2, 8bit data in a memory and store in another memory (indirect addressing mode).txt</h2>
+        <h2>Using 2, 8bit data in a memory and store in another memory (indirect addressing mode)</h2>
         <pre>; swapping of nibbles
 mov si, 1000h
 mov al, [si]
