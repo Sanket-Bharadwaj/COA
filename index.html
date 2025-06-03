@@ -62,316 +62,431 @@
 
     <div class="code-block" onclick="copyContent(this)">
         <h2>2s complement of 8bit number</h2>
-        <pre>mov al, [4000h]
-not al
-add al, 01h
-mov [4004h],al</pre>
+        <pre>
+            mov al, [4000h]    ; Load the byte at memory address 4000h into register AL
+            not al             ; Perform bitwise NOT on AL (invert all bits)
+            add al, 01h        ; Add 1 to AL (2's complement: effectively negates the value in AL)
+            mov [4004h], al    ; Store the result from AL into memory address 4004h
+
+        </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Add,sub,mul & div of 2 16 bit nums(immediate addressing mode)</h2>
-        <pre>; addition
-mov ax, 5225h
-mov bx,ax
-add ax, 4324h
-MOU [2000H], ax
+        <pre>
+            ; Addition
+            mov ax, 5225h        ; Load immediate 16-bit value 5225h into AX
+            mov bx, ax           ; Copy AX into BX (store original value for reuse)
+            add ax, 4324h        ; Add immediate value 4324h to AX
+            mov [2000h], ax      ; Store result of addition at memory location 2000h
+            
+            ; Subtraction
+            mov ax, bx           ; Restore original value from BX into AX
+            sub ax, 4324h        ; Subtract immediate value 4324h from AX
+            mov [2002h], ax      ; Store result of subtraction at memory location 2002h
+            
+            ; Multiplication
+            mov ax, bx           ; Restore original value from BX into AX
+            mov cx, 4324h        ; Load immediate value 4324h into CX
+            mul cx               ; Multiply AX by CX (unsigned multiplication)
+            mov [2004h], ax      ; Store lower 16 bits of result at 2004h
+            mov [2006h], dx      ; Store higher 16 bits of result at 2006h
+            mov dx, 0000h        ; Clear DX (cleanup or prepare for next operations)
+            
+            ; Division
+            mov ax, bx           ; Restore original value to AX (dividend low 16 bits)
+            div cx               ; Divide AX by CX (CX must not be 0); result in AX, remainder in DX
+            mov [2008h], ax      ; Store quotient at 2008h
+            mov [200Ah], dx      ; Store remainder at 200Ah 
 
-; subtraction
-mov ax, bx
-sub ax, 4324h
-mov [2002h],ax
-
-;multiplication
-mov ax, bx
-mov cx, 4324h
-mul cx
-mov [2004h], ax
-mov [2006h], dx
-mov dx, 0000h
-
-;division
-mov ax, bx
-div cx
-mov [2008h], ax
-mov [200Ahl, dx</pre>
+        </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Arrange the elements of array, ascending order</h2>
-        <pre>.DATA
-count db 06
-value db 09H, OFH, 14H, 45H, 24H,
-.CODE
-MAIN PROC
-MOV AX, DATA
-MOV DS, AX
-LEA DI, count
-MOV CH, [DI]
-DEC CH
-UP2: MOV CL, CH
-LEA SI, value
-UP1: MOV AL, [SI]
-CMP AL, [Si+1]
-JC DOWN
-MOV DL, [SI+1]
-XCHG [SI], DL
-MOV [SI+1], DL
+        <pre>
+            .DATA
+                count db 06                  ; Total number of elements (stored as 6)
+                value db 09H, 0FH, 14H, 45H, 24H ; Array of 5 values to be sorted
+            
+            .CODE
+            MAIN PROC
+                MOV AX, DATA                 ; Load the address of DATA segment into AX
+                MOV DS, AX                   ; Initialize DS with the data segment address
+            
+                LEA DI, count                ; Load effective address of 'count' into DI
+                MOV CH, [DI]                 ; Load count value (6) into CH
+                DEC CH                       ; Decrement CH to get number of passes (5)
+            
+            UP2:                             ; Outer loop (CH times)
+                MOV CL, CH                   ; Set inner loop counter (CL = CH)
+                LEA SI, value                ; Load address of array 'value' into SI
+            
+            UP1:                             ; Inner loop (compares adjacent elements)
+                MOV AL, [SI]                 ; Load current element into AL
+                CMP AL, [SI+1]               ; Compare with the next element
+                JC DOWN                      ; If AL < next element, skip swapping
+            
+                MOV DL, [SI+1]               ; Load next element into DL
+                XCHG [SI], DL                ; Exchange DL with current element at [SI]
+                MOV [SI+1], DL               ; Store DL (original [SI]) into [SI+1]
+            
+            DOWN:
+                INC SI                       ; Move to next element
+                DEC CL                       ; Decrement inner loop counter
+                JNZ UP1                      ; If CL != 0, repeat inner loop
+            
+                DEC CH                       ; Decrement outer loop counter
+                JNZ UP2                      ; If CH != 0, repeat outer loop
+            
+                ; Sorted values will now be in the 'value' array
+            
+            END MAIN
 
-DOWN: INC SI
-DEC CL
-JNZ UP1
-DEC CH
-JNZ UP2
-END MAIN</pre>
+        </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Arrange the elements of array, descending order</h2>
-        <pre>.DATA
-count db 06
-value db 09H, OFH, 14H, 45H, 24H, 3FH
-.CODE
-MAIN PROC
-MOV AX, DATA
-MOV DS, AX
-LEA DI, count
-MOV CH, [DI]
-DEC CH
-UP2: MOV CL, CH
-LEA SI, value
-UP1: MOV AL, [SI]
-CMP AL, [Si+1]
-JNC DOWN
-MOV DL, [SI+1]
-XCHG [SI], DL
-MOV [SI+1], DL
-DOWN: INC SI
-DEC CL
-JNZ UP1
-DEC CH
-JNZ UP2
-END MAIN</pre>
+        <pre>
+            .DATA
+                count db 06                  ; Number of elements in the array (6)
+                value db 09H, 0FH, 14H, 45H, 24H, 3FH ; Array of 6 elements to sort
+            
+            .CODE
+            MAIN PROC
+                MOV AX, DATA                 ; Load the address of DATA segment into AX
+                MOV DS, AX                   ; Initialize DS with the data segment address
+            
+                LEA DI, count                ; Load address of 'count' into DI
+                MOV CH, [DI]                 ; Load count value (6) into CH
+                DEC CH                       ; Reduce count by 1 to get outer loop passes (CH = 5)
+            
+            UP2:                             ; Outer loop label
+                MOV CL, CH                   ; Set inner loop counter to CH
+                LEA SI, value                ; Load address of first element in array into SI
+            
+            UP1:                             ; Inner loop label
+                MOV AL, [SI]                 ; Load current element into AL
+                CMP AL, [SI+1]               ; Compare AL with next element
+                JNC DOWN                     ; Jump if AL >= [SI+1] (no swap needed for descending order)
+            
+                MOV DL, [SI+1]               ; Load next element into DL
+                XCHG [SI], DL                ; Swap [SI] and DL (putting smaller value into DL)
+                MOV [SI+1], DL               ; Store DL (original [SI]) into [SI+1]
+            
+            DOWN:
+                INC SI                       ; Move SI to the next element
+                DEC CL                       ; Decrement inner loop counter
+                JNZ UP1                      ; If CL ≠ 0, repeat inner loop
+            
+                DEC CH                       ; Decrement outer loop counter
+                JNZ UP2                      ; If CH ≠ 0, repeat outer loop
+            
+                ; Now the 'value' array is sorted in descending order
+            
+            END MAIN
+
+        </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Count no. of 0's in a 8bit number</h2>
-        <pre>MOV BX, 4000H
-MOV AL, [BX]
-MOV CL, 08H
-MOV CH, 00H
-L2: SHR AL, 01H
-JC L1
-INC CH
-L1: DEC CL
-JNZ L2
-INC BX
-MOV [BX], CH
-HLT</pre>
+        <pre>
+            MOV BX, 4000H      ; Load memory address 4000H into BX
+            MOV AL, [BX]       ; Load the 8-bit value from memory[4000H] into AL
+            MOV CL, 08H        ; Set loop counter to 8 (number of bits in a byte)
+            MOV CH, 00H        ; Clear CH to use it as the zero bit counter
+            
+            L2: SHR AL, 01H    ; Shift AL right by 1 bit (LSB into Carry)
+                JC L1          ; If carry = 1 (bit was 1), skip incrementing CH
+                INC CH         ; Else, bit was 0 → increment CH (zero bit counter)
+            
+            L1: DEC CL         ; Decrement bit counter
+                JNZ L2         ; Repeat until all 8 bits are checked
+            
+            INC BX             ; Move to next memory location (4001H)
+            MOV [BX], CH       ; Store number of 0s into memory[4001H]
+            HLT                ; Stop execution
+
+        </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Cpulator; Perform addition & subtraction of 2, 32bit numbers using data processing addressing mode (with 8-bit immediate data)</h2>
-        <pre>.global_start
-_start:
+        <pre>
+            .global _start     ; Declare _start as global (entry point for the linker)
 
-mov r0, #0x40
-mov r1, #0x50
-adds r2,r0, #0x50
-subs r3,r0, #0x50
-mul r4,ro,r1
-my_exit: b my_exit</pre>
+            _start:
+                mov r0, #0x40         ; Load immediate value 0x40 into register r0
+                mov r1, #0x50         ; Load immediate value 0x50 into register r1
+                adds r2, r0, #0x50    ; Add r0 + 0x50, store result in r2, and update flags
+                subs r3, r0, #0x50    ; Subtract 0x50 from r0, store result in r3, update flags
+                mul r4, r0, r1        ; Multiply r0 and r1, store result in r4
+            
+            my_exit:
+                b my_exit             ; Infinite loop (halts program)
+
+        </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Cpulator; Perform addition, subtraction & multiplication of 2, 32- bit numbers using load,store addressing mode</h2>
-        <pre>.global_start
-_start:
-LDR RO,=0X100000
-LDR R1, [R0],#4
-LDR R2, [R0],#4
-ADDS R3,R1, R2
-STR R3, [R0],#4
-SUBS R4, R1, R2
-STR R4, [R0],#4
-MUL R5, R1, R2
-STR R5, [R0]
-my_exit: b my_exit</pre>
+        <pre>
+            .global _start        ; Define _start as the entry point for the linker
+
+            _start:
+                LDR R0, =0x100000     ; Load the address 0x100000 into register R0
+                LDR R1, [R0], #4      ; Load value from memory at [R0] into R1, then increment R0 by 4
+                LDR R2, [R0], #4      ; Load value from memory at [R0] into R2, then increment R0 by 4
+            
+                ADDS R3, R1, R2       ; Add R1 and R2, store result in R3, update flags
+                STR R3, [R0], #4      ; Store R3 at memory [R0], then increment R0 by 4
+            
+                SUBS R4, R1, R2       ; Subtract R2 from R1, store result in R4, update flags
+                STR R4, [R0], #4      ; Store R4 at memory [R0], then increment R0 by 4
+            
+                MUL R5, R1, R2        ; Multiply R1 and R2, store result in R5
+                STR R5, [R0]          ; Store R5 at memory [R0] (no post-increment)
+            
+            my_exit:
+                b my_exit             ; Infinite loop to stop program
+
+        </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Cpulator; Perform logical operation (and,or,xor & not) on 2, 32-bit numbers using load,store addressing mode</h2>
-        <pre>.global_start
-_start:
-LDR R0,=0X10100000
-LDR R1, [R0],#4
-LDR R2, [R0],#4
-ANDS R3,R2, R1
-STR R3, [R0],#4
-ORR R4, R2, R1
-STR R4, [R0],#4
-EOR R5, R2, R1
-STR R5, [R0],#4
-MVN R6, R1
-STR R6, [R0]
-my_exit: b my_exit</pre>
+        <pre>
+            .global _start          ; Define the entry point for the program
+
+            _start:
+                LDR R0, =0x10100000     ; Load base memory address into R0
+            
+                LDR R1, [R0], #4        ; Load first 32-bit value from memory into R1, increment R0 by 4
+                LDR R2, [R0], #4        ; Load second 32-bit value from memory into R2, increment R0 by 4
+            
+                ANDS R3, R2, R1         ; Perform bitwise AND on R2 and R1, store result in R3, update flags
+                STR R3, [R0], #4        ; Store R3 into memory, increment R0 by 4
+            
+                ORR R4, R2, R1          ; Perform bitwise OR on R2 and R1, store result in R4
+                STR R4, [R0], #4        ; Store R4 into memory, increment R0 by 4
+            
+                EOR R5, R2, R1          ; Perform bitwise XOR on R2 and R1, store result in R5
+                STR R5, [R0], #4        ; Store R5 into memory, increment R0 by 4
+            
+                MVN R6, R1              ; Perform bitwise NOT on R1 (1's complement), store in R6
+                STR R6, [R0]            ; Store R6 into memory (no increment after)
+            
+            my_exit:
+                b my_exit               ; Infinite loop to end the program safely
+
+        </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Find grey code of an 8bit binary number</h2>
-        <pre>mov al, [4000h]
-mov bl,al
-shr al, 01h
-xor al,bl
-mov [4002h],al</pre>
+        <pre>
+            mov al, [4000h]     ; Load the byte from memory address 4000h into AL register
+            mov bl, al          ; Copy the value of AL into BL (backup original value)
+            shr al, 01h         ; Shift AL right by 1 bit (divide by 2, LSB goes into Carry flag)
+            xor al, bl          ; XOR the shifted AL with the original value in BL
+            mov [4002h], al     ; Store the result back into memory address 4002h
+
+        </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Find the largest number in a given array of size N</h2>
-        <pre>.data
-count db 04h
-value db 09h, 10h, 05h, 03h
-res db ?
-.code
-MAIN PROC
-mov ax, data
-mov ds, ax
-mov cl, count
-dec cl
-LEA SI, value
-mov al, [si]
-up: inc si
-cmp al, [si]
-jnc nxt
-mov al, [si]
-nxt: dec cl
-jnz up
-LEA di, res
-mov [di], al
-end main
+        <pre>
+            .data
+            count db 04h              ; Number of elements in the array (4)
+            value db 09h, 10h, 05h, 03h ; Array of 4 values
+            res db ?                 ; Variable to store the result (largest number)
+            
+            .code
+            MAIN PROC
+                mov ax, data         ; Load address of data segment into AX
+                mov ds, ax           ; Initialize DS register to point to data segment
+                mov cl, count        ; Load count (4) into CL register
+                dec cl               ; Decrement CL by 1 (loop counter for comparing elements)
+                LEA SI, value        ; Load effective address of 'value' array into SI
+                mov al, [si]         ; Move first element of array into AL (initial largest value)
+                
+            up: 
+                inc si               ; Move to next element in array
+                cmp al, [si]         ; Compare current largest (AL) with next element
+                jnc nxt              ; If AL >= [SI], jump to nxt (skip updating largest)
+                mov al, [si]         ; Else, update AL with new largest value
+            
+            nxt: 
+                dec cl               ; Decrement loop counter
+                jnz up               ; If counter not zero, continue loop
+            
+                LEA di, res          ; Load address of result variable into DI
+                mov [di], al         ; Store the largest value found into 'res'
+            
+            end main
+
 </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Find the smallest number in a given array of size N</h2>
-        <pre>.DATA
-COUNT DB 04H
-VALUE DB 09H, 10H, 05H, 03H
-RES DB ?
-
-.CODE
-MAIN PROC
-MOV AX, DATA
-MOV DS, AX
-MOV CL, COUNT
-DEC CL
-LEA SI, VALUE
-MOV AL, [SI]
-
-UP: INC SI
-CMP AL, [SI]
-JC NXT
-MOV AL, [SI]
-
-NXT: DEC CL
-JNZ UP
-LEA DI, RES
-MOV [DI], AL
-HLT
-END MAIN</pre>
+        <pre>
+            .DATA
+            COUNT DB 04H                 ; Number of elements in the array (4)
+            VALUE DB 09H, 10H, 05H, 03H ; Array of 4 values
+            RES DB ?                    ; Variable to store the result (largest number)
+            
+            .CODE
+            MAIN PROC
+                MOV AX, DATA            ; Load address of data segment into AX
+                MOV DS, AX              ; Initialize DS register to point to data segment
+                MOV CL, COUNT           ; Load count (4) into CL register
+                DEC CL                  ; Decrement CL by 1 for loop counter
+                LEA SI, VALUE           ; Load effective address of 'value' array into SI
+                MOV AL, [SI]            ; Move first element into AL (initial largest value)
+                
+            UP: 
+                INC SI                  ; Move to next element in the array
+                CMP AL, [SI]            ; Compare current largest (AL) with next element
+                JC NXT                  ; Jump if AL < [SI], means next element is larger, so skip update
+                MOV AL, [SI]            ; Update AL with new largest value if current element is bigger
+                
+            NXT: 
+                DEC CL                  ; Decrement loop counter
+                JNZ UP                  ; Loop until all elements checked
+                
+                LEA DI, RES             ; Load address of 'res' to DI
+                MOV [DI], AL            ; Store the largest value found into 'res'
+                HLT                     ; Halt the program
+            END MAIN
+        </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Find the sum & average of N 16 bit numbers</h2>
-        <pre>MOV SI, 2000H
-MOV CL, [SI]
-MOV CH,00H
-MOV BX, CX
-MOV AX, 0000H
-L2: INC SI
-INC SI
-ADD AX, [SI]
-JNC L1
-INC CH
-L1: DEC CL
-JNZ L2
-INC SI
-INC SI
-MOV [SI], AX
-INC SI
-INC SI
-MOV [SI], CH
-MOV DL, CH
-DIV BX
-INC SI
-INC SI
-MOV [SI], AX
-INC SI
-INC SI
-MOV [SI], DX
-HLT</pre>
+        <pre>
+            MOV SI, 2000H         ; Load SI with base address 2000h (start of data)
+            MOV CL, [SI]          ; Load count (number of elements) from memory at 2000h into CL
+            MOV CH, 00H           ; Clear CH, now CX = CL with high byte zero (CX used as 16-bit count)
+            MOV BX, CX            ; Copy CX to BX (BX will be divisor for later division)
+            MOV AX, 0000H         ; Clear AX (will hold sum)
+            
+            L2: 
+                INC SI            ; Move SI to next byte (first element of data array)
+                INC SI            ; Move SI again (assuming 16-bit data? or skipping?)
+                ADD AX, [SI]      ; Add 16-bit word at [SI] to AX (sum accumulator)
+                JNC L1            ; Jump to L1 if no carry (no overflow in addition)
+                INC CH            ; If carry (overflow), increment CH (counting overflow times)
+            L1: 
+                DEC CL            ; Decrement element count
+                JNZ L2            ; Repeat loop while CL != 0
+            
+            INC SI                ; Move SI ahead two bytes (to next memory location)
+            INC SI                
+            MOV [SI], AX          ; Store sum (AX) at current memory location
+            INC SI                ; Move SI ahead two bytes
+            INC SI                
+            MOV [SI], CH          ; Store overflow count (CH) at current location
+            
+            MOV DL, CH            ; Move overflow count into DL
+            DIV BX                ; Divide AX by BX (using DX:AX as dividend, but DX was not set - risky!)
+                                  ; Result quotient in AL, remainder in AH (if 8-bit DIV) or AX and DX (if 16-bit)
+                                  ; Assuming 8-bit division here since DL is 8-bit divisor, so AL = AX low byte
+            
+            INC SI                ; Move SI ahead two bytes
+            INC SI                
+            MOV [SI], AX          ; Store quotient (AX) at memory location
+            
+            INC SI                ; Move SI ahead two bytes
+            INC SI                
+            MOV [SI], DX          ; Store remainder (DX) at memory location
+            
+            HLT                   ; Halt the program
+
+        </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Move a block of 16bit data from one location to another</h2>
-        <pre>MOV AX, 4000H
-MOV DS, AX
-MOV SI, 5000H
-MOV DI, 6000H
-MOV CL, 05H
-L1: MOV BX, [SI]
-MOV [DI], BX
-INC SI
-INC SI
-INC DI
-INC DI
-DEC CL
-JNZ L1
-HLT</pre>
+        <pre>
+            MOV AX, 4000H      ; Load AX with segment address 4000h
+            MOV DS, AX         ; Set DS (data segment) to 4000h
+            
+            MOV SI, 5000H      ; Load SI with source offset 5000h (source address)
+            MOV DI, 6000H      ; Load DI with destination offset 6000h (destination address)
+            
+            MOV CL, 05H        ; Set loop counter CL to 5 (number of words to copy)
+            
+            L1: 
+                MOV BX, [SI]   ; Move 16-bit word from memory at DS:SI into BX
+                MOV [DI], BX   ; Store 16-bit word from BX into memory at DS:DI
+            
+                INC SI         ; Increment SI by 1 (point to next byte)
+                INC SI         ; Increment SI by 1 again (total +2, next word)
+                INC DI         ; Increment DI by 1 (point to next byte)
+                INC DI         ; Increment DI by 1 again (total +2, next word)
+            
+                DEC CL         ; Decrement loop counter CL
+                JNZ L1         ; Repeat loop until CL = 0
+            
+            HLT                ; Halt execution
+
+        </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Multiplication of 2, 16bit nums without using MUL ins in direct addressing mode</h2>
-        <pre>MOV BX, [5000H]
-MOV CX [5002H]
-MOV DX, 0000H
-MOV AX, 0000H
+        <pre>
+            MOV BX, [5000H]     ; Load word at memory address 5000H into BX
+            MOV CX, [5002H]     ; Load word at memory address 5002H into CX (loop counter)
+            MOV DX, 0000H       ; Clear DX (high word for carry count)
+            MOV AX, 0000H       ; Clear AX (accumulator for sum)
+            
+            L2: 
+                ADD AX, BX      ; Add BX to AX
+                JNC L1          ; Jump to L1 if no carry (no overflow from ADD)
+                INC DX          ; If carry occurred, increment DX (carry count)
+            
+            L1: 
+                DEC CX          ; Decrement loop counter CX
+                JNZ L2          ; If CX not zero, repeat loop
+            
+            MOV [5004H], AX     ; Store the sum (AX) at memory address 5004H
+            MOV [5006H], DX     ; Store the carry count (DX) at memory address 5006H
+            HLT                 ; Halt execution
 
-L2: ADD AX, BX
-JNC L1 
-INC DX 
-
-L1: DEC CX
-JNZ L2 
-
-MOV [5004H], AX
-MOV [5006H], DX
-HLT
 </pre>
     </div>
     
     <div class="code-block" onclick="copyContent(this)">
         <h2>Using 2, 8bit data in a memory and store in another memory (indirect addressing mode)</h2>
-        <pre>; swapping of nibbles
-mov si, 1000h
-mov al, [si]
-mov cl, al
-inc si
-mov bl, [si]
-mov dl,al
-shr al,04
-shl dl,04
-or al,dl
-inc si
-mov [si],al
-
-; computation of y
-mov al,cl
-and al,bl
-mov dl,al
-xor cl,bl
-or al,cl
-inc si
-mov [si],al</pre>
+        <pre>
+            ; Swapping of nibbles
+            mov si, 1000h          ; Load SI with address 1000h
+            mov al, [si]           ; Load AL with byte at address SI (1000h)
+            mov cl, al             ; Copy AL to CL for later use (backup original value)
+            inc si                 ; Increment SI to point to next byte (1001h)
+            mov bl, [si]           ; Load BL with byte at address SI (1001h)
+            mov dl, al             ; Copy AL to DL (to preserve original AL value)
+            
+            shr al, 04             ; Shift AL right by 4 bits (high nibble moves to low nibble position)
+            shl dl, 04             ; Shift DL left by 4 bits (low nibble moves to high nibble position)
+            or al, dl              ; Combine the two nibbles, swapping their positions
+            inc si                 ; Increment SI (now points to 1002h)
+            mov [si], al           ; Store swapped nibble byte at address 1002h
+            
+            ; Computation of y
+            mov al, cl             ; Restore original AL value from CL
+            and al, bl             ; AL = AL AND BL (bitwise AND)
+            mov dl, al             ; Copy result to DL
+            xor cl, bl             ; CL = original AL XOR BL (bitwise XOR)
+            or al, cl              ; AL = (AL AND BL) OR (AL XOR BL)
+            inc si                 ; Increment SI (now 1003h)
+            mov [si], al           ; Store computed result at address 1003h
+</pre>
     </div>
     
 <script>
